@@ -14,5 +14,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 const LINE =
   "You don't need to learn to code — just describe the app idea you've been carrying around in plain words, and an AI agent on make.fun will build you a working first version you can actually tap and try.";
 
+// The bounty caps the sentence at 240 characters, counted as Unicode code
+// points: fail loudly here rather than ship an over-long or multi-line
+// entry that the gate would refuse.
+if ([...LINE].length > 240 || LINE.includes("\n")) {
+  throw new Error("entry line must be one sentence of at most 240 characters");
+}
+
 mkdirSync("/output", { recursive: true });
 writeFileSync("/output/entry.txt", LINE, "utf8");
